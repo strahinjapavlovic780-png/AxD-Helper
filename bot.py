@@ -1,12 +1,19 @@
 import discord
 from discord.ext import commands
+import os  # Obavezno za os.getenv
 
-bot = commands.Bot(command_prefix="$")
+# Define intents
+intents = discord.Intents.default()
+intents.message_content = True  # Obavezno za komande i poruke
+
+# Create bot with prefix and intents
+bot = commands.Bot(command_prefix="$", intents=intents)
 
 # Owner role ID
 OWNER_ROLE_ID = 1486458080265896097
 SHOP_NAME = "AxD Shop"
 
+# ------------------ $panel command ------------------
 @bot.command()
 async def panel(ctx):
     # Check if user has Owner role
@@ -39,14 +46,13 @@ async def panel(ctx):
 
     await ctx.send(embed=embed, view=view)
 
-
-# Interaction listener for shop tickets
+# ------------------ Button interaction ------------------
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
     if interaction.type == discord.InteractionType.component:
         if interaction.data["custom_id"] == "open_shop_ticket":
             guild = interaction.guild
-            category = discord.utils.get(guild.categories, name="Shop Tickets")  # make a category named "Shop Tickets"
+            category = discord.utils.get(guild.categories, name="Shop Tickets")  # Make sure this category exists
             ticket_channel = await guild.create_text_channel(
                 name=f"shop-{interaction.user.name}",
                 category=category,
@@ -60,6 +66,7 @@ async def on_interaction(interaction: discord.Interaction):
             )
             await interaction.response.send_message("✅ Your shop ticket has been created!", ephemeral=True)
 
+# ------------------ $close command ------------------
 @bot.command()
 async def close(ctx):
     # Check if user has the Owner role
@@ -74,7 +81,7 @@ async def close(ctx):
     else:
         await ctx.send("❌ This command can only be used inside a ticket channel.")
 
-
+# ------------------ Run bot ------------------
 token = os.getenv("TOKEN")
 
 if not token:
