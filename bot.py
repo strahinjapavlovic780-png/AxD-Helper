@@ -1,27 +1,24 @@
 import discord
 from discord.ext import commands
-import os  # Obavezno za os.getenv
+import os
 
-# Define intents
+# ------------------ Bot setup ------------------
 intents = discord.Intents.default()
-intents.message_content = True  # Obavezno za komande i poruke
+intents.message_content = True  # Neophodno za komande i poruke
 
-# Create bot with prefix and intents
 bot = commands.Bot(command_prefix="$", intents=intents)
 
-# Owner role ID
-OWNER_ROLE_ID = 1486458080265896097
+# ------------------ Config ------------------
+OWNER_ROLE_ID = 1486458080265896097  # Zameni sa tvojim Owner role ID
 SHOP_NAME = "AxD Shop"
 
 # ------------------ $panel command ------------------
 @bot.command()
 async def panel(ctx):
-    # Check if user has Owner role
     if OWNER_ROLE_ID not in [role.id for role in ctx.author.roles]:
         await ctx.send("❌ You don't have permission to use this command!")
         return
 
-    # Create the shop embed
     embed = discord.Embed(
         title=f"🛒 Welcome to {SHOP_NAME}!",
         description=(
@@ -36,10 +33,10 @@ async def panel(ctx):
         color=discord.Color.green()
     )
 
-    embed.set_thumbnail(url="https://i.imgur.com/yourShopThumbnail.png")  # optional thumbnail
+    embed.set_thumbnail(url="https://i.imgur.com/yourShopThumbnail.png")
     embed.set_footer(text=f"{SHOP_NAME} | Your trusted shop")
 
-    # Create a button for opening a shop ticket
+    # Button to open shop ticket
     view = discord.ui.View()
     button = discord.ui.Button(label="🛒 Open Shop Ticket", style=discord.ButtonStyle.green, custom_id="open_shop_ticket")
     view.add_item(button)
@@ -52,29 +49,40 @@ async def on_interaction(interaction: discord.Interaction):
     if interaction.type == discord.InteractionType.component:
         if interaction.data["custom_id"] == "open_shop_ticket":
             guild = interaction.guild
-            category = discord.utils.get(guild.categories, name="Shop Tickets")  # Make sure this category exists
+            category = discord.utils.get(guild.categories, name="Shop Tickets")  # Napravi ovu kategoriju
             ticket_channel = await guild.create_text_channel(
                 name=f"shop-{interaction.user.name}",
                 category=category,
                 reason="New shop ticket opened"
             )
+
+            # Permissions za korisnika
             await ticket_channel.set_permissions(interaction.user, send_messages=True, read_messages=True)
-            await ticket_channel.send(
-                f"Hello {interaction.user.mention}! 🛒\n"
-                "Welcome to your **personal shop ticket**. Our staff will assist you shortly.\n"
-                "Please **state which product** you want to buy or ask your questions here."
+
+            # Embed u kanalu
+            embed = discord.Embed(
+                title=f"🛒 {SHOP_NAME} - Shop Ticket",
+                description=(
+                    "Welcome to your **personal shop ticket**.\n"
+                    "Our staff will assist you shortly.\n"
+                    "Please write which product you want to buy or ask your questions here."
+                ),
+                color=discord.Color.blue()
             )
+            await ticket_channel.send(embed=embed)
+
+            # Mention korisnika van embeda
+            await ticket_channel.send(f"{interaction.user.mention} your ticket is ready! ✅")
+
             await interaction.response.send_message("✅ Your shop ticket has been created!", ephemeral=True)
 
 # ------------------ $close command ------------------
 @bot.command()
 async def close(ctx):
-    # Check if user has the Owner role
     if OWNER_ROLE_ID not in [role.id for role in ctx.author.roles]:
         await ctx.send("❌ You don't have permission to close this ticket!")
         return
 
-    # Check if the channel is a ticket channel
     if ctx.channel.name.startswith("ticket-") or ctx.channel.name.startswith("shop-"):
         await ctx.send("✅ Closing the ticket...")
         await ctx.channel.delete()
@@ -83,7 +91,6 @@ async def close(ctx):
 
 # ------------------ Run bot ------------------
 token = os.getenv("TOKEN")
-
 if not token:
     raise ValueError("TOKEN environment variable not set")
 
