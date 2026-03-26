@@ -30,7 +30,7 @@ async def panel(ctx):
             "To purchase or ask questions, click the **Open Shop Ticket** button below. Our staff will assist you personally.\n\n"
             "**Thank you for choosing AxD Shop!** 💙"
         ),
-        color=discord.Color.green()
+        color=discord.Color.black()
     )
 
     embed.set_thumbnail(url="https://i.imgur.com/yourShopThumbnail.png")
@@ -38,7 +38,7 @@ async def panel(ctx):
 
     # Button to open shop ticket
     view = discord.ui.View()
-    button = discord.ui.Button(label="🛒 Open Shop Ticket", style=discord.ButtonStyle.green, custom_id="open_shop_ticket")
+    button = discord.ui.Button(label="🛒 Open Shop Ticket", style=discord.ButtonStyle.black, custom_id="open_shop_ticket")
     view.add_item(button)
 
     await ctx.send(embed=embed, view=view)
