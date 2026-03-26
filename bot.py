@@ -4,7 +4,7 @@ import os
 
 # ------------------ Bot setup ------------------
 intents = discord.Intents.default()
-intents.message_content = True  # Neophodno za komande i poruke
+intents.message_content = True  # Obavezno za komande i poruke
 
 bot = commands.Bot(command_prefix="$", intents=intents)
 
@@ -30,7 +30,7 @@ async def panel(ctx):
             "To purchase or ask questions, click the **Open Shop Ticket** button below. Our staff will assist you personally.\n\n"
             "**Thank you for choosing AxD Shop!** 💙"
         ),
-        color=discord.Color.black()
+        color=discord.Color.dark_grey()  # CRNA BOJA
     )
 
     embed.set_thumbnail(url="https://i.imgur.com/yourShopThumbnail.png")
@@ -38,7 +38,7 @@ async def panel(ctx):
 
     # Button to open shop ticket
     view = discord.ui.View()
-    button = discord.ui.Button(label="🛒 Open Shop Ticket", style=discord.ButtonStyle.black, custom_id="open_shop_ticket")
+    button = discord.ui.Button(label="🛒 Open Shop Ticket", style=discord.ButtonStyle.green, custom_id="open_shop_ticket")
     view.add_item(button)
 
     await ctx.send(embed=embed, view=view)
@@ -67,7 +67,7 @@ async def on_interaction(interaction: discord.Interaction):
                     "Our staff will assist you shortly.\n"
                     "Please write which product you want to buy or ask your questions here."
                 ),
-                color=discord.Color.black()
+                color=discord.Color.dark_grey()  # CRNA BOJA
             )
             await ticket_channel.send(embed=embed)
 
