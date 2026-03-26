@@ -11,6 +11,7 @@ bot = commands.Bot(command_prefix="$", intents=intents)
 # ------------------ Config ------------------
 OWNER_ROLE_ID = 1486458080265896097  # Zameni sa tvojim Owner role ID
 SHOP_NAME = "AxD Shop"
+TICKET_CATEGORY_NAME = "Tickets"  # Naziv kategorije gde ce ticketi biti
 
 # ------------------ $panel command ------------------
 @bot.command()
@@ -49,15 +50,25 @@ async def on_interaction(interaction: discord.Interaction):
     if interaction.type == discord.InteractionType.component:
         if interaction.data["custom_id"] == "open_shop_ticket":
             guild = interaction.guild
-            category = discord.utils.get(guild.categories, name="Shop Tickets")  # Napravi ovu kategoriju
+
+            # Provera da li kategorija postoji, ako ne postoji kreira je
+            category = discord.utils.get(guild.categories, name=TICKET_CATEGORY_NAME)
+            if category is None:
+                category = await guild.create_category(TICKET_CATEGORY_NAME)
+
+            # Kreiranje ticket kanala u toj kategoriji
             ticket_channel = await guild.create_text_channel(
                 name=f"shop-{interaction.user.name}",
                 category=category,
                 reason="New shop ticket opened"
             )
 
-            # Permissions za korisnika
+            # Permissions: samo owner i korisnik
+            owner_role = discord.utils.get(guild.roles, id=OWNER_ROLE_ID)
+            await ticket_channel.set_permissions(guild.default_role, view_channel=False)  # svi ostali ne vide
             await ticket_channel.set_permissions(interaction.user, send_messages=True, read_messages=True)
+            if owner_role:
+                await ticket_channel.set_permissions(owner_role, send_messages=True, read_messages=True)
 
             # Embed u kanalu
             embed = discord.Embed(
