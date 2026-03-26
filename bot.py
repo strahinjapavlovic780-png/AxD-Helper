@@ -67,7 +67,7 @@ async def on_interaction(interaction: discord.Interaction):
                     "Our staff will assist you shortly.\n"
                     "Please write which product you want to buy or ask your questions here."
                 ),
-                color=discord.Color.blue()
+                color=discord.Color.black()
             )
             await ticket_channel.send(embed=embed)
 
