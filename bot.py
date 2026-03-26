@@ -60,5 +60,24 @@ async def on_interaction(interaction: discord.Interaction):
             )
             await interaction.response.send_message("✅ Your shop ticket has been created!", ephemeral=True)
 
+@bot.command()
+async def close(ctx):
+    # Check if user has the Owner role
+    if OWNER_ROLE_ID not in [role.id for role in ctx.author.roles]:
+        await ctx.send("❌ You don't have permission to close this ticket!")
+        return
 
-bot.run("YOUR_TOKEN_HERE")
+    # Check if the channel is a ticket channel
+    if ctx.channel.name.startswith("ticket-") or ctx.channel.name.startswith("shop-"):
+        await ctx.send("✅ Closing the ticket...")
+        await ctx.channel.delete()
+    else:
+        await ctx.send("❌ This command can only be used inside a ticket channel.")
+
+
+token = os.getenv("TOKEN")
+
+if not token:
+    raise ValueError("TOKEN environment variable not set")
+
+bot.run(token)
