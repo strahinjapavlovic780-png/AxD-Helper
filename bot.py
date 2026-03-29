@@ -10,7 +10,7 @@ bot = commands.Bot(command_prefix="$", intents=intents)
 
 # ------------------ Config ------------------
 OWNER_ROLE_ID = 1486458080265896097  # Zameni sa tvojim Owner role ID
-SHOP_NAME = "AxD Shop"
+SHOP_NAME = "Nexora Shp"
 TICKET_CATEGORY_NAME = "Tickets"  # Naziv kategorije gde ce ticketi biti
 
 # ------------------ $panel command ------------------
@@ -29,7 +29,7 @@ async def panel(ctx):
             "• Product 2 – **Limited stock, grab it fast!**\n"
             "• Product 3 – **Best seller of the month**\n\n"
             "To purchase or ask questions, click the **Open Shop Ticket** button below. Our staff will assist you personally.\n\n"
-            "**Thank you for choosing AxD Shop!** 💙"
+            "**Thank you for choosing Nexora Shp!** 💙"
         ),
         color=discord.Color.dark_grey()  # CRNA BOJA
     )
