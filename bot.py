@@ -31,7 +31,7 @@ async def panel(ctx):
             "To purchase or ask questions, click the **Open Shop Ticket** button below. Our staff will assist you personally.\n\n"
             "**Thank you for choosing Nexora Shp!** 💙"
         ),
-        color=discord.Color.dark_grey()  # CRNA BOJA
+        color=discord.Color.green()  # CRNA BOJA
     )
 
     embed.set_thumbnail(url="https://i.imgur.com/yourShopThumbnail.png")
